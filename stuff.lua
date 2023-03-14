@@ -1,3 +1,58 @@
+function slab_settings_menu()
+    Slab.BeginWindow('settings_window', {
+        X = 0,
+        Y = 0,
+        AllowMove = false,
+        AllowResize = false,
+        NoOutline = true
+    })
+
+    if Slab.Input('Number of taps', {
+        Text = tostring(max_taps), 
+        NumbersOnly = true,
+        MinNumber = 2,
+        Step = 4,
+        W = 100,
+        H = 20,
+    }) then
+        max_taps = Slab.GetInputNumber()
+    end
+
+    if Slab.CheckBox(enable_consistency_bars, "Show consistency bars", {
+        Tooltip = "Visually show the time between the start of each tap",
+        Size = 16
+    }) then
+        enable_consistency_bars = not enable_consistency_bars
+    end
+
+	if Slab.CheckBox(autotap, "Auto-tap", {
+        Tooltip = "Cheater",
+        Size = 16
+    }) then
+        autotap = not autotap
+    end
+
+	Slab.EndWindow()
+end
+
+function draw_consistency_bars()
+    local max_height = 0
+
+    local iterations = math.ceil(love.graphics.getWidth()/50)
+
+    for i = 1, iterations do
+        local h = diffs[#diffs - i + 1] or 0
+        heights[i] = h
+        max_height = math.max(max_height, h)
+    end
+
+    for i = 1, iterations do
+        local h = heights[i]/max_height
+        h = h * 300
+        love.graphics.rectangle("fill", love.graphics.getWidth() - i * 50, love.graphics.getHeight() - h, 30, h)
+    end
+end
+
 function get_bpm()
     if #timing_points == 0 then return 0 end
     -- simply dividing taps by time will overestimate bpm at the start

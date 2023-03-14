@@ -1,26 +1,15 @@
-require("common")
-local Slab = require("Slab")
+Slab = require("Slab")
+require("stuff")
 
 function love.load(args)
     key1 = "kp1"
     key2 = "kp5"
     max_taps = 64
 
+    enable_consistency_bars = true
     autotap = false
-
-    started = false
-    stopped = false
-    timing_points = {}
-    diffs = {}
-    heights = {}
-    start_time = 0
-    elapsed_time = 0
-    autotapper = 0
-    oldkey = ""
-    mistake = false
-
-    font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 22)
-
+    
+    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 22)
 
     Slab.Initialize(args)
     Slab.GetStyle().FontSize = 30 -- doesn't work?
@@ -28,6 +17,25 @@ function love.load(args)
     Slab.GetStyle().ButtonColor = {1, 1, 1, 1}
     Slab.GetStyle().CheckBoxSelectedColor = {0, 0, 0, 1}
     Slab.GetStyle().TextColor = {1, 1, 1, 1}
+    Slab.GetStyle().InputBgColor = {0.1, 0.1, 0.1, 1}
+    Slab.GetStyle().InputEditBgColor = {0.2, 0.2, 0.2, 1}
+    Slab.GetStyle().InputSelectColor = {0, 0.75, 1, 0.5}
+    Slab.GetStyle().CheckBoxRounding = 0
+    Slab.GetStyle().InputBgRounding = 0
+
+    function reset()
+        started = false
+        stopped = false
+        timing_points = {}
+        diffs = {}
+        heights = {}
+        start_time = 0
+        elapsed_time = 0
+        oldkey = ""
+        autotapper = 0
+        mistake = false
+    end
+    reset()
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -53,7 +61,7 @@ function love.keypressed(key, scancode, isrepeat)
     end
 
     if key == "r" then
-        love.load()
+        reset()
     end
 end
 
@@ -69,23 +77,7 @@ function love.update(dt)
     end
 
     Slab.Update(dt)
-  
-	Slab.BeginWindow('background_window', {
-        X = 0,
-        Y = 0,
-        AllowMove = false,
-        AllowResize = false,
-        NoOutline = true
-    })
-	if Slab.CheckBox(autotap, "Auto-tap", {
-        Tooltip = "ww",
-        Rounding = 0,
-        Size = 16
-    }) then
-        autotap = not autotap
-    end
-
-	Slab.EndWindow()
+    slab_settings_menu()
 end
 
 function love.draw()
@@ -101,27 +93,13 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1)        
     end
 
-
-    love.graphics.setFont(font)
-    love.graphics.printf(string.format("%d taps in %.2f seconds", #timing_points, elapsed_time), 0, 0, width, "center")
+    love.graphics.setFont(open_hexagon_font)
+    love.graphics.printf(string.format("%d taps in %.3f seconds", #timing_points, elapsed_time), 0, 0, width, "center")
     love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, 0, width, "center")
     love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, 0, width, "center")
 
-
-    local max_height = 0
-
-    local iterations = math.ceil(width/50)
-
-    for i = 1, iterations do
-        local h = diffs[#diffs - i + 1] or 0
-        heights[i] = h
-        max_height = math.max(max_height, h)
-    end
-
-    for i = 1, iterations do
-        local h = heights[i]/max_height
-        h = h * 300
-        love.graphics.rectangle("fill", width - i * 50, love.graphics.getHeight() - h, 30, h)
+    if enable_consistency_bars then 
+        draw_consistency_bars() 
     end
 
     Slab.Draw()
