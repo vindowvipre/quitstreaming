@@ -12,13 +12,13 @@ function love.load(args)
     open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 22)
 
     Slab.Initialize(args)
-    Slab.GetStyle().FontSize = 30 -- doesn't work?
-    Slab.GetStyle().WindowBackgroundColor = {0, 0, 0, 0}
+    Slab.GetStyle().Font = open_hexagon_font
+    Slab.GetStyle().WindowBackgroundColor = {0, 0, 0, 1}
     Slab.GetStyle().ButtonColor = {1, 1, 1, 1}
     Slab.GetStyle().CheckBoxSelectedColor = {0, 0, 0, 1}
     Slab.GetStyle().TextColor = {1, 1, 1, 1}
-    Slab.GetStyle().InputBgColor = {0.1, 0.1, 0.1, 1}
-    Slab.GetStyle().InputEditBgColor = {0.2, 0.2, 0.2, 1}
+    Slab.GetStyle().InputBgColor = {1, 1, 1, 1}
+    Slab.GetStyle().InputEditBgColor = {0.85, 0.85, 0.85, 1}
     Slab.GetStyle().InputSelectColor = {0, 0.75, 1, 0.5}
     Slab.GetStyle().CheckBoxRounding = 0
     Slab.GetStyle().InputBgRounding = 0
@@ -51,7 +51,6 @@ function love.keypressed(key, scancode, isrepeat)
         end
 
         mistake = oldkey == key
-
         oldkey = key
     end
 
@@ -60,7 +59,7 @@ function love.keypressed(key, scancode, isrepeat)
         stopped = true
     end
 
-    if key == "r" then
+    if key == "escape" then
         reset()
     end
 end
@@ -93,7 +92,7 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1)        
     end
 
-    love.graphics.setFont(open_hexagon_font)
+    --love.graphics.setFont(open_hexagon_font)
     love.graphics.printf(string.format("%d taps in %.3f seconds", #timing_points, elapsed_time), 0, 0, width, "center")
     love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, 0, width, "center")
     love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, 0, width, "center")

@@ -9,25 +9,26 @@ function slab_settings_menu()
 
     if Slab.Input('Number of taps', {
         Text = tostring(max_taps), 
+        TextColor = {0, 0, 0, 1},
         NumbersOnly = true,
         MinNumber = 2,
         Step = 4,
         W = 100,
-        H = 20,
+        H = 25,
     }) then
         max_taps = Slab.GetInputNumber()
     end
 
     if Slab.CheckBox(enable_consistency_bars, "Show consistency bars", {
         Tooltip = "Visually show the time between the start of each tap",
-        Size = 16
+        Size = 22
     }) then
         enable_consistency_bars = not enable_consistency_bars
     end
 
 	if Slab.CheckBox(autotap, "Auto-tap", {
         Tooltip = "Cheater",
-        Size = 16
+        Size = 22
     }) then
         autotap = not autotap
     end
@@ -36,7 +37,7 @@ function slab_settings_menu()
 end
 
 function draw_consistency_bars()
-    local max_height = 0
+    local max_height = 0 
 
     local iterations = math.ceil(love.graphics.getWidth()/50)
 
@@ -48,7 +49,7 @@ function draw_consistency_bars()
 
     for i = 1, iterations do
         local h = heights[i]/max_height
-        h = h * 300
+        h = h * love.graphics.getHeight() * 0.5
         love.graphics.rectangle("fill", love.graphics.getWidth() - i * 50, love.graphics.getHeight() - h, 30, h)
     end
 end
@@ -56,11 +57,13 @@ end
 function get_bpm()
     if #timing_points == 0 then return 0 end
     -- simply dividing taps by time will overestimate bpm at the start
-    -- so this emulates adding the "finger-windup" time for the first press
+    -- one way is to add the "finger-windup" time for the first press
+    -- but this method just ignores the first press entirely
     -- multiply CPS by 15 to get BPM
 
     --return taps/(time * (taps + 1)/taps) * 15
-    return (#timing_points - 1)/(elapsed_time) * 15
+    --return (#timing_points - 1)/(elapsed_time) * 15
+    return (#timing_points - 1)/timing_points[#timing_points] * 15
 end
 
 -- ysasv2 method
