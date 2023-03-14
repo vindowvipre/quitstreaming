@@ -7,14 +7,15 @@ function slab_settings_menu()
         NoOutline = true
     })
 
+    Slab.Text("Number of taps")
     if Slab.Input('Number of taps', {
         Text = tostring(max_taps), 
         TextColor = {0, 0, 0, 1},
         NumbersOnly = true,
         MinNumber = 2,
         Step = 4,
-        W = 100,
-        H = 25,
+        W = 160,
+        H = 21,
     }) then
         max_taps = Slab.GetInputNumber()
     end
@@ -26,11 +27,19 @@ function slab_settings_menu()
         enable_consistency_bars = not enable_consistency_bars
     end
 
-	if Slab.CheckBox(autotap, "Auto-tap", {
+    if Slab.CheckBox(enable_all_keys, "Allow every key", {
+        Tooltip = "Push your limits",
+        Size = 22,
+        Disabled = true -- todo
+    }) then
+        enable_all_keys = not enable_all_keys
+    end
+
+	if Slab.CheckBox(enable_autotap, "Auto-tap", {
         Tooltip = "Cheater",
         Size = 22
     }) then
-        autotap = not autotap
+        enable_autotap = not enable_autotap
     end
 
 	Slab.EndWindow()

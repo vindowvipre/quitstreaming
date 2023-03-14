@@ -7,9 +7,10 @@ function love.load(args)
     max_taps = 64
 
     enable_consistency_bars = true
-    autotap = false
-    
-    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 22)
+    enable_all_keys = true
+    enable_autotap = false
+
+    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 21)
 
     Slab.Initialize(args)
     Slab.GetStyle().Font = open_hexagon_font
@@ -18,7 +19,7 @@ function love.load(args)
     Slab.GetStyle().CheckBoxSelectedColor = {0, 0, 0, 1}
     Slab.GetStyle().TextColor = {1, 1, 1, 1}
     Slab.GetStyle().InputBgColor = {1, 1, 1, 1}
-    Slab.GetStyle().InputEditBgColor = {0.85, 0.85, 0.85, 1}
+    Slab.GetStyle().InputEditBgColor = {0.8, 0.8, 0.8, 1}
     Slab.GetStyle().InputSelectColor = {0, 0.75, 1, 0.5}
     Slab.GetStyle().CheckBoxRounding = 0
     Slab.GetStyle().InputBgRounding = 0
@@ -71,8 +72,8 @@ end
 function love.update(dt)
     autotapper = autotapper + 1
 
-    if autotap and autotapper % 7 == 0 then
-        love.keypressed("auto", 727, false)
+    if enable_autotap and autotapper % 7 == 0 then
+        love.keypressed("auto" .. autotapper, 727, false)
     end
 
     Slab.Update(dt)
@@ -92,7 +93,6 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1)        
     end
 
-    --love.graphics.setFont(open_hexagon_font)
     love.graphics.printf(string.format("%d taps in %.3f seconds", #timing_points, elapsed_time), 0, 0, width, "center")
     love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, 0, width, "center")
     love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, 0, width, "center")
