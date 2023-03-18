@@ -42,6 +42,13 @@ function slab_settings_menu()
         enable_consistency_bars = not enable_consistency_bars
     end
 
+    if Slab.CheckBox(enable_key_indicator, "Show key indicator", {
+        Tooltip = "See history of pressed keys",
+        Size = 22
+    }) then
+        enable_key_indicator = not enable_key_indicator
+    end
+
     if Slab.CheckBox(enable_all_keys, "Allow every key", {
         Tooltip = "Push your limits",
         Size = 22,
@@ -84,9 +91,15 @@ function tap(key)
 end
 
 function draw_consistency_bars()
+    local width = love.graphics.getWidth()
+
+    if enable_key_indicator then
+        width = width - 200
+    end
+
     local max_height = 0 
 
-    local iterations = math.ceil(love.graphics.getWidth()/50)
+    local iterations = math.ceil(width/50)
 
     for i = 1, iterations do
         local h = diffs[#diffs - i + 1] or 0
@@ -97,8 +110,28 @@ function draw_consistency_bars()
     for i = 1, iterations do
         local h = heights[i]/max_height
         h = h * love.graphics.getHeight() * 0.5
-        love.graphics.rectangle("fill", love.graphics.getWidth() - i * 50, love.graphics.getHeight() - h, 30, h)
+        love.graphics.rectangle("fill", width - i * 50, love.graphics.getHeight() - h, 30, h)
     end
+end
+
+function draw_key_indicator()
+    local x1 = love.graphics.getWidth() - 185
+    local x2 = love.graphics.getWidth() - 95
+    local y = love.graphics.getHeight() - 90
+    local size = 60
+
+    love.graphics.rectangle("line",  x1, y, size, size)
+    love.graphics.rectangle("line",  x2, y, size, size)
+
+    if love.keyboard.isDown(key1) then
+        love.graphics.rectangle("fill",  x1, y, size, size)
+    end
+    if love.keyboard.isDown(key2) then
+        love.graphics.rectangle("fill",  x2, y, size, size)
+    end
+
+    love.graphics.printf(key1, x1, y + 16, size, "center")
+    love.graphics.printf(key2, x2, y + 16, size, "center")
 end
 
 function get_bpm()

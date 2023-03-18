@@ -3,15 +3,16 @@ require("stuff")
 
 function love.load(args)
     key1 = "z"
-    key2 = "x"
+    key2 = "c"
     max_taps = 64
 
     enable_consistency_bars = true
+    enable_key_indicator = true
     enable_all_keys = true
     enable_autotap = false
     enable_reset_with_r = true
 
-    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 21)
+    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 22)
 
     Slab.Initialize(args)
     set_slab_style()
@@ -79,6 +80,9 @@ function love.draw()
 
     if enable_consistency_bars then 
         draw_consistency_bars() 
+    end
+    if enable_key_indicator then
+        draw_key_indicator()
     end
 
     Slab.Draw()
