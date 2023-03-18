@@ -2,27 +2,19 @@ Slab = require("Slab")
 require("stuff")
 
 function love.load(args)
-    key1 = "kp1"
-    key2 = "kp5"
+    key1 = "z"
+    key2 = "x"
     max_taps = 64
 
     enable_consistency_bars = true
     enable_all_keys = true
     enable_autotap = false
+    enable_reset_with_r = true
 
     open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 21)
 
     Slab.Initialize(args)
-    Slab.GetStyle().Font = open_hexagon_font
-    Slab.GetStyle().WindowBackgroundColor = {0, 0, 0, 1}
-    Slab.GetStyle().ButtonColor = {1, 1, 1, 1}
-    Slab.GetStyle().CheckBoxSelectedColor = {0, 0, 0, 1}
-    Slab.GetStyle().TextColor = {1, 1, 1, 1}
-    Slab.GetStyle().InputBgColor = {1, 1, 1, 1}
-    Slab.GetStyle().InputEditBgColor = {0.8, 0.8, 0.8, 1}
-    Slab.GetStyle().InputSelectColor = {0, 0.75, 1, 0.5}
-    Slab.GetStyle().CheckBoxRounding = 0
-    Slab.GetStyle().InputBgRounding = 0
+    set_slab_style()
 
     function reset()
         started = false
@@ -46,21 +38,10 @@ function love.keypressed(key, scancode, isrepeat)
     end
 
     if started then
-        timing_points[#timing_points + 1] = love.timer.getTime() - start_time
-        if #timing_points > 1 then
-            diffs[#diffs + 1] = timing_points[#timing_points] - timing_points[#timing_points - 1]
-        end
-
-        mistake = oldkey == key
-        oldkey = key
+        tap(key)
     end
 
-    if #timing_points >= max_taps then
-        started = false
-        stopped = true
-    end
-
-    if key == "escape" then
+    if key == "escape" or enable_reset_with_r and key == "r" then
         reset()
     end
 end
@@ -81,8 +62,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    local width = love.graphics.getWidth()
-
     if started then
         elapsed_time = love.timer.getTime() - start_time
     end
@@ -93,6 +72,7 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1)        
     end
 
+    local width = love.graphics.getWidth()
     love.graphics.printf(string.format("%d taps in %.3f seconds", #timing_points, elapsed_time), 0, 0, width, "center")
     love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, 0, width, "center")
     love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, 0, width, "center")

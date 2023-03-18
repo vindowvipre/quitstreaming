@@ -1,3 +1,17 @@
+-- i don't really understand the style documentation, this is the only way i could get it to work
+function set_slab_style()
+    Slab.GetStyle().Font = open_hexagon_font
+    Slab.GetStyle().WindowBackgroundColor = {0, 0, 0, 1}
+    Slab.GetStyle().ButtonColor = {1, 1, 1, 1}
+    Slab.GetStyle().CheckBoxSelectedColor = {0, 0, 0, 1}
+    Slab.GetStyle().TextColor = {1, 1, 1, 1}
+    Slab.GetStyle().InputBgColor = {1, 1, 1, 1}
+    Slab.GetStyle().InputEditBgColor = {0.8, 0.8, 0.8, 1}
+    Slab.GetStyle().InputSelectColor = {0, 0.75, 1, 0.5}
+    Slab.GetStyle().CheckBoxRounding = 0
+    Slab.GetStyle().InputBgRounding = 0
+end
+
 function slab_settings_menu()
     Slab.BeginWindow('settings_window', {
         X = 0,
@@ -16,6 +30,7 @@ function slab_settings_menu()
         Step = 4,
         W = 160,
         H = 21,
+        NoDrag = true,
     }) then
         max_taps = Slab.GetInputNumber()
     end
@@ -42,7 +57,30 @@ function slab_settings_menu()
         enable_autotap = not enable_autotap
     end
 
+    if Slab.CheckBox(enable_reset_with_r, "Reset with R key", {
+        Tooltip = "There's at least 1 fucker who uses R as one of their keys (escape also works)",
+        Size = 22
+    }) then
+        enable_reset_with_r = not enable_reset_with_r
+    end
+
 	Slab.EndWindow()
+end
+
+function tap(key)
+    timing_points[#timing_points + 1] = love.timer.getTime() - start_time
+
+    if #timing_points > 1 then
+        diffs[#diffs + 1] = timing_points[#timing_points] - timing_points[#timing_points - 1]
+    end
+
+    mistake = oldkey == key
+    oldkey = key
+
+    if #timing_points >= max_taps then
+        started = false
+        stopped = true
+    end    
 end
 
 function draw_consistency_bars()
