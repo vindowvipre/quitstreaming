@@ -134,6 +134,10 @@ function draw_key_indicator()
     love.graphics.printf(key2, x2, y + 16, size, "center")
 end
 
+function draw_key_history()
+    -- implement this later
+end
+
 function get_bpm()
     if #timing_points == 0 then return 0 end
     -- simply dividing taps by time will overestimate bpm at the start

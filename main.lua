@@ -52,10 +52,11 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.update(dt)
-    autotapper = autotapper + 1
+    autotapper = autotapper - dt
 
-    if enable_autotap and autotapper % 7 == 0 then
+    if enable_autotap and autotapper < 0 then
         love.keypressed("auto" .. autotapper, 727, false)
+        autotapper = 0.05
     end
 
     Slab.Update(dt)
@@ -83,8 +84,8 @@ function love.draw()
     end
     if enable_key_indicator then
         draw_key_indicator()
-    end
-
+    end 
+    
     Slab.Draw()
 end
 
