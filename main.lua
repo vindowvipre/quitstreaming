@@ -11,8 +11,9 @@ function love.load(args)
     enable_all_keys = true
     enable_autotap = false
     enable_reset_with_r = true
+    scrolling_speed = 600
 
-    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 22)
+    open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 24)
 
     Slab.Initialize(args)
     set_slab_style()
@@ -28,6 +29,10 @@ function love.load(args)
         oldkey = ""
         autotapper = 0
         mistake = false
+        key1_history = {}
+        key2_history = {}
+        key1_state = false
+        key2_state = false
     end
     reset()
 end
@@ -59,6 +64,10 @@ function love.update(dt)
         autotapper = 0.05
     end
 
+    if started then
+        update_key_history()
+    end
+
     Slab.Update(dt)
     slab_settings_menu()
 end
@@ -75,9 +84,10 @@ function love.draw()
     end
 
     local width = love.graphics.getWidth()
-    love.graphics.printf(string.format("%d taps in %.3f seconds", #timing_points, elapsed_time), 0, 0, width, "center")
-    love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, 0, width, "center")
-    love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, 0, width, "center")
+    local text_height = love.graphics.getHeight()/15
+    love.graphics.printf(string.format("%d taps in %.3f seconds", #timing_points, elapsed_time), 0, text_height, width, "center")
+    love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, text_height, width, "center")
+    love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, text_height, width, "center")
 
     if enable_consistency_bars then 
         draw_consistency_bars() 

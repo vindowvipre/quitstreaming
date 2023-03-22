@@ -114,6 +114,17 @@ function draw_consistency_bars()
     end
 end
 
+function update_key_history()
+    if key1_state ~= love.keyboard.isDown(key1) then 
+        key1_history[#key1_history + 1] = elapsed_time
+    end
+    if key2_state ~= love.keyboard.isDown(key2) then 
+        key2_history[#key2_history + 1] = elapsed_time
+    end
+    key1_state = love.keyboard.isDown(key1)
+    key2_state = love.keyboard.isDown(key2)
+end
+
 function draw_key_indicator()
     local x1 = love.graphics.getWidth() - 185
     local x2 = love.graphics.getWidth() - 95
@@ -132,10 +143,44 @@ function draw_key_indicator()
 
     love.graphics.printf(key1, x1, y + 16, size, "center")
     love.graphics.printf(key2, x2, y + 16, size, "center")
+
+    draw_key_history(key1_history, x1, y, size)
+    draw_key_history(key2_history, x2, y, size)
 end
 
-function draw_key_history()
-    -- implement this later
+-- rewrite this to be less spaghetti?
+function draw_key_history(key_history, x, base_y, width)
+    local r, g, b = love.graphics.getColor()
+    love.graphics.setColor(r, g, b, 0.5)
+
+    local height = 0
+    local time_offset = 0
+
+    if #key_history % 2 == 1 then
+        height = elapsed_time - key_history[#key_history]
+        height = height * scrolling_speed
+        love.graphics.rectangle("fill", x, base_y - height, width, height)
+    end
+    
+    local index = 0
+    local num_presses = math.floor(#key_history * 0.5)
+    for i = 1, num_presses do
+        local last_release = num_presses * 2
+
+        height = (key_history[last_release - index] or 0) - (key_history[last_release - index - 1] or 0)
+        time_offset = elapsed_time - (key_history[last_release - index] or 0)
+
+        index = index + 2
+
+        height = height * scrolling_speed
+        time_offset = time_offset * scrolling_speed
+
+        if base_y - time_offset < 0 then
+            break
+        end
+
+        love.graphics.rectangle("fill", x, base_y - (height + time_offset), width, height)
+    end
 end
 
 function get_bpm()
