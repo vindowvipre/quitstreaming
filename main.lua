@@ -18,6 +18,8 @@ function love.load(args)
     Slab.Initialize(args)
     set_slab_style()
 
+    love.graphics.setLineWidth(3)
+
     function reset()
         started = false
         stopped = false
