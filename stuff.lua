@@ -94,7 +94,7 @@ function draw_consistency_bars()
     local width = love.graphics.getWidth()
 
     if enable_key_indicator then
-        width = width - 200
+        width = width - 150
     end
 
     local max_height = 0 
@@ -126,9 +126,9 @@ function update_key_history()
 end
 
 function draw_key_indicator()
-    local x1 = love.graphics.getWidth() - 185
-    local x2 = love.graphics.getWidth() - 95
-    local y = love.graphics.getHeight() - 90
+    local x1 = love.graphics.getWidth() - 150
+    local x2 = love.graphics.getWidth() - 75
+    local y = love.graphics.getHeight() - 75
     local size = 60
 
     love.graphics.rectangle("line",  x1, y, size, size)

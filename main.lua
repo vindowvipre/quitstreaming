@@ -80,7 +80,7 @@ function love.draw()
     if mistake then
         love.graphics.setColor(1, 0, 0, 1)
     else
-        love.graphics.setColor(1, 1, 1, 1)        
+        love.graphics.setColor(1, 1, 1, 1)
     end
 
     local width = love.graphics.getWidth()
