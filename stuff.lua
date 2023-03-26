@@ -36,7 +36,7 @@ function slab_settings_menu()
     end
 
     if Slab.CheckBox(enable_consistency_bars, "Show consistency bars", {
-        Tooltip = "Visually show the time between the start of each tap",
+        Tooltip = "Show the time between each tap's start",
         Size = 22
     }) then
         enable_consistency_bars = not enable_consistency_bars
@@ -69,6 +69,21 @@ function slab_settings_menu()
         Size = 22
     }) then
         enable_reset_with_r = not enable_reset_with_r
+    end
+
+    Slab.Text("Scroll Speed")
+    if Slab.Input('Scroll Speed', {
+        Text = tostring(scrolling_speed), 
+        TextColor = {0, 0, 0, 1},
+        NumbersOnly = true,
+        MinNumber = 30,
+        MaxNumber = 3000,
+        Step = 20,
+        W = 160,
+        H = 21,
+        UseSlider = true
+    }) then
+        scrolling_speed = Slab.GetInputNumber()
     end
 
 	Slab.EndWindow()
