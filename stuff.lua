@@ -81,7 +81,7 @@ function slab_settings_menu()
         Step = 20,
         W = 160,
         H = 21,
-        UseSlider = true
+        NoDrag = true
     }) then
         scrolling_speed = Slab.GetInputNumber()
     end
