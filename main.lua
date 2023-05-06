@@ -2,8 +2,8 @@ Slab = require("Slab")
 require("stuff")
 
 function love.load(args)
-    key1 = "z"
-    key2 = "c"
+    key1 = "a"
+    key2 = "s"
     max_taps = 64
 
     enable_consistency_bars = true
