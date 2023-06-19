@@ -9,7 +9,7 @@ function love.load(args)
     enable_consistency_bars = true
     enable_key_indicator = true
     enable_mouse_buttons = false
-    enable_all_keys = true
+    enable_all_keys = false
     enable_autotap = false
     enable_reset_with_r = true
     scrolling_speed = 600
@@ -45,18 +45,15 @@ function love.keypressed(key, scancode, isrepeat)
     if selecting_key == 1 then
         key1 = key
         selecting_key = 0
+        key = nil
     elseif selecting_key == 2 then
         key2 = key
         selecting_key = 0
+        key = nil
     end
 
 
-    if not started and not stopped then
-        start_time = love.timer.getTime()
-        started = true
-    end
-
-    if started then
+    if key == key1 or key == key2 or enable_all_keys then
         tap(key)
     end
 
@@ -67,7 +64,7 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
     if enable_mouse_buttons then
-        love.keypressed("mouse" .. button, 69, false)
+        tap("mouse" .. button)
     end
 end
 

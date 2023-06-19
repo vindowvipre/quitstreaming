@@ -30,7 +30,7 @@ function slab_settings_menu()
         Step = 4,
         W = 160,
         H = 21,
-        NoDrag = true,
+        NoDrag = true
     }) then
         max_taps = Slab.GetInputNumber()
     end
@@ -51,7 +51,7 @@ function slab_settings_menu()
 
     if Slab.CheckBox(enable_mouse_buttons, "Allow mouse buttons", {
         Tooltip = "Mouse-only is the only fun way to play osu",
-        Size = 22,
+        Size = 22
     }) then
         enable_mouse_buttons = not enable_mouse_buttons
     end
@@ -59,7 +59,6 @@ function slab_settings_menu()
     if Slab.CheckBox(enable_all_keys, "Allow every key", {
         Tooltip = "Push your limits",
         Size = 22,
-        Disabled = true -- todo
     }) then
         enable_all_keys = not enable_all_keys
     end
@@ -97,19 +96,28 @@ function slab_settings_menu()
 end
 
 function tap(key)
-    timing_points[#timing_points + 1] = love.timer.getTime() - start_time
-
-    if #timing_points > 1 then
-        diffs[#diffs + 1] = timing_points[#timing_points] - timing_points[#timing_points - 1]
+    if not started and not stopped then
+        start_time = love.timer.getTime()
+        started = true
     end
 
-    mistake = oldkey == key
-    oldkey = key
+    if started then
+        timing_points[#timing_points + 1] = love.timer.getTime() - start_time
 
-    if #timing_points >= max_taps then
-        started = false
-        stopped = true
-    end    
+        if #timing_points > 1 then
+            diffs[#diffs + 1] = timing_points[#timing_points] - timing_points[#timing_points - 1]
+        end
+
+        mistake = oldkey == key
+        oldkey = key
+
+        if #timing_points >= max_taps then
+            started = false
+            stopped = true
+        end  
+    end
+
+      
 end
 
 function draw_consistency_bars()
