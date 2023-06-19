@@ -49,6 +49,13 @@ function slab_settings_menu()
         enable_key_indicator = not enable_key_indicator
     end
 
+    if Slab.CheckBox(enable_reset_with_r, "Reset with R key", {
+        Tooltip = "There's at least 1 fucker who uses R as one of their keys (escape also works)",
+        Size = 22
+    }) then
+        enable_reset_with_r = not enable_reset_with_r
+    end
+
     if Slab.CheckBox(enable_mouse_buttons, "Allow mouse buttons", {
         Tooltip = "Mouse-only is the only fun way to play osu",
         Size = 22
@@ -68,13 +75,6 @@ function slab_settings_menu()
         Size = 22
     }) then
         enable_autotap = not enable_autotap
-    end
-
-    if Slab.CheckBox(enable_reset_with_r, "Reset with R key", {
-        Tooltip = "There's at least 1 fucker who uses R as one of their keys (escape also works)",
-        Size = 22
-    }) then
-        enable_reset_with_r = not enable_reset_with_r
     end
 
     Slab.Text("Scroll Speed")
