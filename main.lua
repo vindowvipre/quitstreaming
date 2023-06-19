@@ -8,12 +8,14 @@ function love.load(args)
 
     enable_consistency_bars = true
     enable_key_indicator = true
+    enable_mouse_buttons = false
     enable_all_keys = true
     enable_autotap = false
     enable_reset_with_r = true
     scrolling_speed = 600
 
     open_hexagon_font = love.graphics.newFont("assets/OpenSquare-Regular.ttf", 24)
+    square_size = 60
 
     Slab.Initialize(args)
     set_slab_style()
@@ -40,6 +42,15 @@ function love.load(args)
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    if selecting_key == 1 then
+        key1 = key
+        selecting_key = 0
+    elseif selecting_key == 2 then
+        key2 = key
+        selecting_key = 0
+    end
+
+
     if not started and not stopped then
         start_time = love.timer.getTime()
         started = true
@@ -55,7 +66,9 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-    love.keypressed("mouse" .. button, 69, false)
+    if enable_mouse_buttons then
+        love.keypressed("mouse" .. button, 69, false)
+    end
 end
 
 function love.update(dt)
@@ -91,6 +104,7 @@ function love.draw()
     love.graphics.printf(string.format("\n%.2f BPM", get_bpm()), 0, text_height, width, "center")
     love.graphics.printf(string.format("\n\nUnstable Rate: %.2f  [%.2f]", get_ur(), precise_ur()), 0, text_height, width, "center")
 
+    draw_key_buttons()
     if enable_consistency_bars then 
         draw_consistency_bars() 
     end

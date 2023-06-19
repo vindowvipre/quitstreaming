@@ -49,6 +49,13 @@ function slab_settings_menu()
         enable_key_indicator = not enable_key_indicator
     end
 
+    if Slab.CheckBox(enable_mouse_buttons, "Allow mouse buttons", {
+        Tooltip = "Mouse-only is the only fun way to play osu",
+        Size = 22,
+    }) then
+        enable_mouse_buttons = not enable_mouse_buttons
+    end
+
     if Slab.CheckBox(enable_all_keys, "Allow every key", {
         Tooltip = "Push your limits",
         Size = 22,
@@ -144,23 +151,22 @@ function draw_key_indicator()
     local x1 = love.graphics.getWidth() - 150
     local x2 = love.graphics.getWidth() - 75
     local y = love.graphics.getHeight() - 75
-    local size = 60
 
-    love.graphics.rectangle("line",  x1, y, size, size)
-    love.graphics.rectangle("line",  x2, y, size, size)
+    love.graphics.rectangle("line",  x1, y, square_size, square_size)
+    love.graphics.rectangle("line",  x2, y, square_size, square_size)
 
     if love.keyboard.isDown(key1) then
-        love.graphics.rectangle("fill",  x1, y, size, size)
+        love.graphics.rectangle("fill",  x1, y, square_size, square_size)
     end
     if love.keyboard.isDown(key2) then
-        love.graphics.rectangle("fill",  x2, y, size, size)
+        love.graphics.rectangle("fill",  x2, y, square_size, square_size)
     end
 
-    love.graphics.printf(key1, x1, y + 16, size, "center")
-    love.graphics.printf(key2, x2, y + 16, size, "center")
+    love.graphics.printf(key1, x1, y + 16, square_size, "center")
+    love.graphics.printf(key2, x2, y + 16, square_size, "center")
 
-    draw_key_history(key1_history, x1, y, size)
-    draw_key_history(key2_history, x2, y, size)
+    draw_key_history(key1_history, x1, y, square_size)
+    draw_key_history(key2_history, x2, y, square_size)
 end
 
 -- rewrite this to be less spaghetti?
@@ -197,6 +203,60 @@ function draw_key_history(key_history, x, base_y, width)
         love.graphics.rectangle("fill", x, base_y - (height + time_offset), width, height)
     end
 end
+
+-- is ui stuff possible to not be spaghetti
+function draw_key_buttons()
+    local x1 = love.graphics.getWidth()/2 - 80
+    local x2 = x1 + 100
+
+    -- below the text
+    local y = love.graphics.getHeight()/15 + 175
+
+    love.graphics.rectangle("line",  x1, y, square_size, square_size)
+    love.graphics.rectangle("line",  x2, y, square_size, square_size)
+    local mouse_x, mouse_y = love.mouse.getPosition()
+    
+    local mid_x1 = x1 + square_size/2
+    local mid_x2 = x2 + square_size/2
+    local mid_y = y + square_size/2
+
+    -- sdf-type square distance to the middle of the button, instead of checking all bounds
+    local dist = math.max(math.abs(mouse_x - mid_x1), math.abs(mouse_y - mid_y))
+
+    local r, g, b, a = love.graphics.getColor()
+
+    -- when mouse is hovered
+    if dist < square_size/2 then
+        if love.mouse.isDown(1) then
+            selecting_key = 1
+        else
+            love.graphics.setColor(r, g, b, 0.3)
+        end
+
+        love.graphics.rectangle("fill",  x1, y, square_size, square_size)
+    end
+
+    dist = math.max(math.abs(mouse_x - mid_x2), math.abs(mouse_y - mid_y))
+    if dist < square_size/2 then
+        if love.mouse.isDown(1) then
+            selecting_key = 2
+        else
+            love.graphics.setColor(r, g, b, 0.3)
+        end
+
+        love.graphics.rectangle("fill",  x2, y, square_size, square_size)
+    end
+
+    love.graphics.setColor(r, g, b, a)
+
+    if selecting_key ~= 1 then
+        love.graphics.printf(key1, x1, y + 16, square_size, "center")
+    end
+    if selecting_key ~= 2 then
+        love.graphics.printf(key2, x2, y + 16, square_size, "center")
+    end
+end
+
 
 function get_bpm()
     if #timing_points == 0 then return 0 end
