@@ -13,9 +13,10 @@ function set_slab_style()
 end
 
 function slab_settings_menu()
-    Slab.BeginWindow('settings_window', {
-        X = 0,
-        Y = 0,
+    Slab.BeginWindow('tap_count', {
+        -- below the text
+        X = love.graphics.getWidth()/2 - 85,
+        Y = love.graphics.getHeight()/15 + 110,
         AllowMove = false,
         AllowResize = false,
         NoOutline = true
@@ -34,6 +35,16 @@ function slab_settings_menu()
     }) then
         max_taps = Slab.GetInputNumber()
     end
+
+	Slab.EndWindow()
+
+    Slab.BeginWindow('settings_window', {
+        X = 0,
+        Y = 0,
+        AllowMove = false,
+        AllowResize = false,
+        NoOutline = true
+    })
 
     if Slab.CheckBox(enable_consistency_bars, "Show consistency bars", {
         Tooltip = "Show the time between each tap's start",
@@ -218,7 +229,7 @@ function draw_key_buttons()
     local x2 = x1 + 100
 
     -- below the text
-    local y = love.graphics.getHeight()/15 + 175
+    local y = love.graphics.getHeight()/15 + 190
 
     love.graphics.rectangle("line",  x1, y, square_size, square_size)
     love.graphics.rectangle("line",  x2, y, square_size, square_size)
@@ -262,6 +273,13 @@ function draw_key_buttons()
     end
     if selecting_key ~= 2 then
         love.graphics.printf(key2, x2, y + 16, square_size, "center")
+    end
+
+    if love.keyboard.isDown(key1) then
+        love.graphics.rectangle("fill",  x1, y, square_size, square_size)
+    end
+    if love.keyboard.isDown(key2) then
+        love.graphics.rectangle("fill",  x2, y, square_size, square_size)
     end
 end
 
